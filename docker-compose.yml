@@ -4,22 +4,23 @@ services:
      build: ./nginx/
      ports:
        - 80:80
-  
      volumes:
-         - ./php/:/var/www/html/
+       - ./php/:/var/www/html/
+     depends_on:
+       - php
 
    php:
      build: ./php/
      expose:
        - 9000
      volumes:
-        - ./php/:/var/www/html/
+       - ./php/:/var/www/html/
 
    db:    
-      image: mariadb  
-      volumes: 
-        -    mysql-data:/var/lib/mysql
-      environment:  
+     image: mariadb  
+     volumes: 
+       - mysql-data:/var/lib/mysql
+     environment:  
        MYSQL_ROOT_PASSWORD: mariadb
        MYSQL_DATABASE: kasir 
 
