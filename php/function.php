@@ -220,90 +220,74 @@ function tambah_data_menu()
 // Function Edit Data Menu
 
 function edit_data_menu()
-
 {
-
     global $koneksi;
 
+    $id_menu = intval($_POST["id_menu"]);
+    $nama = htmlspecialchars($_POST["nama"], ENT_QUOTES);
+    $harga = intval($_POST["harga"]);
+    $gambar = $_FILES["gambar"]["name"];
+    $kategori = htmlspecialchars($_POST["kategori"], ENT_QUOTES);
+    $status = htmlspecialchars($_POST["status"], ENT_QUOTES);
+    $kode_menu = htmlspecialchars($_POST["kode_menu"], ENT_QUOTES);
 
+    // Allowed image formats
+    $allowed_formats = ["jpg", "jpeg", "png", "gif"];
+    $image_extension = strtolower(pathinfo($gambar, PATHINFO_EXTENSION));
 
-    $id_menu = $_POST["id_menu"];
-
-    $nama = htmlspecialchars($_POST["nama"]);
-
-    $harga = (int) htmlspecialchars($_POST["harga"]);
-
-    $gambar = htmlspecialchars($_FILES["gambar"]["name"]);
-
-    $kategori = htmlspecialchars($_POST["kategori"]);
-
-    $status = htmlspecialchars($_POST["status"]);
-
-    $kode_menu = htmlspecialchars($_POST["kode_menu"]);
-
-
-
-    // cek format gambar
-
-    $format_gambar = ["jpg", "jpeg", "png", "gif"];
-
-    $cek_gambar = explode(".", $gambar);
-
-    $cek_gambar = strtolower(end($cek_gambar));
-
-    if (!in_array($cek_gambar, $format_gambar) && strlen($gambar) != 0) {
-
+    // Check image format
+    if (!in_array($image_extension, $allowed_formats) && !empty($gambar)) {
         echo "<script>
-
             alert('File yang diupload bukan merupakan image!');
-
         </script>";
-
         return -1;
     }
 
-
-
-    // cek jika admin mengupload gambar yang baru
-
+    // Get old image name
     $gambar_lama = $_POST["gambar-lama"];
 
+    // Handle new image upload
+    if (!empty($gambar)) {
+        // Generate a unique name for the image to avoid conflicts
+        $new_image_name = uniqid() . "." . $image_extension;
 
+        // Define the target path
+        $target_path = "php/src/img/$new_image_name";
 
-    if (strlen($gambar) == 0) {
-
+        // Move the uploaded file to the target path
+        if (move_uploaded_file($_FILES["gambar"]["tmp_name"], $target_path)) {
+            // Delete the old image if a new one is uploaded successfully
+            if (!empty($gambar_lama) && file_exists("php/src/img/$gambar_lama")) {
+                unlink("php/src/img/$gambar_lama");
+            }
+            $gambar = $new_image_name;
+        } else {
+            echo "<script>
+                alert('Gagal mengupload gambar!');
+            </script>";
+            return -1;
+        }
+    } else {
+        // Keep the old image if no new image is uploaded
         $gambar = $gambar_lama;
-    } else if ($gambar != $gambar_lama && strlen($gambar) != 0) {
-
-        move_uploaded_file($_FILES["gambar"]["tmp_name"], "src/img/$gambar");
-
-        unlink("src/img/$gambar_lama");
     }
 
+    // Execute the update query
+    $query = "UPDATE menu
+              SET kode_menu = '$kode_menu',
+                  nama = '$nama',
+                  harga = $harga,
+                  gambar = '$gambar',
+                  kategori = '$kategori',
+                  `status` = '$status'
+              WHERE id_menu = $id_menu";
 
+    mysqli_query($koneksi, $query);
 
-    // eksekusi query update
-
-    mysqli_query($koneksi, "UPDATE menu
-
-                            SET kode_menu = '$kode_menu',
-
-                                nama = '$nama',
-
-                                harga = $harga,
-
-                                gambar = '$gambar',
-
-                                kategori = '$kategori',
-
-                                `status` = '$status'
-
-                            WHERE id_menu = $id_menu
-
-    ");
-
+    // Return the number of affected rows
     return mysqli_affected_rows($koneksi);
 }
+
 
 
 
