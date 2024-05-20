@@ -198,7 +198,7 @@ function tambah_data_menu()
 
     // upload file
     $nama_gambar = uniqid() . ".$cek_gambar";
-    move_uploaded_file($_FILES["gambar"]["tmp_name"], "src/img/$nama_gambar");
+    move_uploaded_file($_FILES["gambar"]["tmp_name"], "/var/www/html/src/img/$nama_gambar");
 
 
 
@@ -252,13 +252,13 @@ function edit_data_menu()
         $new_image_name = uniqid() . "." . $image_extension;
 
         // Define the target path
-        $target_path = "php/src/img/$new_image_name";
+        $target_path = "/var/www/html/src/img/$new_image_name";
 
         // Move the uploaded file to the target path
         if (move_uploaded_file($_FILES["gambar"]["tmp_name"], $target_path)) {
             // Delete the old image if a new one is uploaded successfully
-            if (!empty($gambar_lama) && file_exists("php/src/img/$gambar_lama")) {
-                unlink("php/src/img/$gambar_lama");
+            if (!empty($gambar_lama) && file_exists("/var/www/html/src/img/$gambar_lama")) {
+                unlink("/var/www/html/src/img/$gambar_lama");
             }
             $gambar = $new_image_name;
         } else {
@@ -309,7 +309,7 @@ function hapus_data_menu()
 
     $file_gambar = ambil_data("SELECT * FROM menu WHERE id_menu = $id_menu")[0]["gambar"];
 
-    unlink("src/img/$file_gambar");
+    unlink("/var/www/html/src/img/$file_gambar");
 
 
 
