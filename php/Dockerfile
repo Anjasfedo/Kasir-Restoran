@@ -7,6 +7,6 @@ RUN docker-php-ext-install mysqli pdo pdo_mysql gd
 WORKDIR /var/www/html/
 
 # Ensure proper permissions for the uploads directory
-RUN mkdir -p /var/www/html/uploads && \
-    chown -R www-data:www-data /var/www/html/uploads && \
-    chmod -R 755 /var/www/html/uploads
+RUN mkdir -p /var/www/html/src/img && \
+    chown -R www-data:www-data /var/www/html/src/img && \
+    chmod -R 755 /var/www/html/src/img
