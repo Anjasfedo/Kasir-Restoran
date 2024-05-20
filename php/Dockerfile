@@ -4,8 +4,9 @@ FROM php:8.1-fpm
 # Specify the desired user ID
 ARG USER_ID=1001
 
-# Install necessary PHP extensions
-RUN docker-php-ext-install mysqli pdo pdo_mysql gd
+RUN docker-php-ext-install mysqli pdo pdo_mysql
+
+RUN docker-php-ext-enable mysqli
 
 # Set the working directory
 WORKDIR /var/www/html/
