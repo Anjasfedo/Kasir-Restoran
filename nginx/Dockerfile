@@ -5,4 +5,5 @@ FROM nginx:latest
 COPY ./default.conf /etc/nginx/conf.d/default.conf
 
 # Set permissions for Nginx
-RUN chmod -R 755 /var/www/html/
+RUN mkdir -p /var/www/html/ && \
+    chmod -R 755 /var/www/html/
