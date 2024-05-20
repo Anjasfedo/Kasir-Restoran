@@ -358,7 +358,7 @@ function tambah_data_pesanan()
 
     // Generate Kode Pesanan
 
-    $kode_pesanan = uniqid();
+    $kode_pesanan = substr(uniqid(), 0, 12);
 
 
 
@@ -410,9 +410,9 @@ function tambah_data_pesanan()
 
     // Tambah Data Transaksi
 
-    mysqli_query($koneksi, "INSERT INTO transaksi
+    mysqli_query($koneksi, "INSERT INTO transaksi (kode_pesanan, nama_pelanggan, waktu)
 
-                            VALUES ('', '$kode_pesanan', '$pelanggan', NOW())
+                            VALUES ('$kode_pesanan', '$pelanggan', NOW())
 
     ");
 
